@@ -5,12 +5,14 @@ const mongoAccount = require("../../db/account")
 const mongoWares = require("../../db/wares")
 const mongoLogin = require("../../db/login")
 const mongoRoles = require("../../db/roles")
+const path = require("path");
+const {powersAdd} = require("../../manage/handRoles");
 // 配置天气路由
 router.get("/weather", async (req, res) => {
-    let {data} = await axios.get("http://pv.sohu.com/cityjson?ie=utf-8")
-    // 剪切的时候  市字不能存在
-    let url = data.split("省")[1].split('市')[0];
-    axios.get(`https://v0.yiketianqi.com/api?unescape=1&version=v91&appid=43656176&appsecret=I42og6Lm&ext=&cityid=&city=${encodeURIComponent(url)}`)
+    // let {data} = await axios.get("http://pv.sohu.com/cityjson?ie=utf-8")
+    // // 剪切的时候  市字不能存在
+    // let url = data.split("省")[1].split('市')[0];
+    axios.get(`https://v0.yiketianqi.com/api?unescape=1&version=v91&appid=43656176&appsecret=I42og6Lm&ext=&cityid=&city=${encodeURIComponent("成都")}`)
         .then(({data}) => {
             res.send({
                 code: 1, value: "天气测试", data: {
@@ -108,7 +110,11 @@ router.get("/userPage", async (req, res) => {
     let size= num * age - age
     let doc = await mongoLogin.find({}, {}, {skip: size, limit: age}).populate("LoginAbout", {roleName: 1})
     res.send({code: 1, value: "分页默认成功", data: doc})
-
-
+})
+router.get("/paity/json",(req,res)=>{
+    res.sendFile(path.join(__dirname, '../../dataJson/flights.json'))
+})
+router.get("/paity/hdr",(req,res)=>{
+    res.sendFile(path.join(__dirname, '../../dataJson/lake.hdr'))
 })
 module.exports = router

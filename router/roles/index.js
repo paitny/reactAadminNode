@@ -13,4 +13,5 @@ router.post("/prowsAdd",async (req,res)=>{
  let doc=   await powersAdd(req.body)
     res.send({code: 1, value: "权限添加",data:doc})
 })
+
 module.exports=router
